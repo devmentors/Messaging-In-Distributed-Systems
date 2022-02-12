@@ -5,24 +5,17 @@ namespace SuperStore.Carts.Services;
 
 internal sealed class MessagingBackgroundService : BackgroundService
 {
-    private readonly IChannelFactory _channelFactory;
     private readonly IMessageSubscriber _messageSubscriber;
     private readonly ILogger<MessagingBackgroundService> _logger;
 
-    public MessagingBackgroundService(IChannelFactory channelFactory, IMessageSubscriber messageSubscriber, 
-        ILogger<MessagingBackgroundService> logger)
+    public MessagingBackgroundService(IMessageSubscriber messageSubscriber, ILogger<MessagingBackgroundService> logger)
     {
-        _channelFactory = channelFactory;
         _messageSubscriber = messageSubscriber;
         _logger = logger;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        var channel = _channelFactory.Create();
-        
-        channel.ExchangeDeclare("Funds", "topic", durable: false, autoDelete: false, null);
-        
         _messageSubscriber
             .SubscribeMessage<FundsMessage>("carts-service-eu-many-words-queue", "EU.#", "Funds",
                 (msg, args) =>

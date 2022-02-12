@@ -15,6 +15,7 @@ internal sealed class MessageSubscriber : IMessageSubscriber
     public IMessageSubscriber SubscribeMessage<TMessage>(string queue, string routingKey, string exchange, 
         Func<TMessage, BasicDeliverEventArgs, Task> handle) where TMessage : class, IMessage
     {
+        _channel.ExchangeDeclare(exchange, "topic", durable: false, autoDelete: false, null);
         _channel.QueueDeclare(queue, durable: false, autoDelete: false, exclusive: false);
         _channel.QueueBind(queue, exchange, routingKey);
 
