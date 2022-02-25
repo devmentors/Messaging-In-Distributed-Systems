@@ -18,6 +18,8 @@ internal sealed class MessageSubscriber : IMessageSubscriber
         _channel.ExchangeDeclare(exchange, "topic", durable: false, autoDelete: false, null);
         _channel.QueueDeclare(queue, durable: false, autoDelete: false, exclusive: false);
         _channel.QueueBind(queue, exchange, routingKey);
+        
+        _channel.BasicQos(0, 1, false);
 
         var consumer = new EventingBasicConsumer(_channel);
         consumer.Received += async (model, ea) =>
@@ -26,9 +28,11 @@ internal sealed class MessageSubscriber : IMessageSubscriber
             var message = JsonSerializer.Deserialize<TMessage>(Encoding.UTF8.GetString(body));
 
             await handle(message, ea);
+            
+            _channel.BasicAck(ea.DeliveryTag, multiple: false);
         };
 
-        _channel.BasicConsume(queue, autoAck: true, consumer: consumer);
+        _channel.BasicConsume(queue, autoAck: false, consumer: consumer);
         
         return this;
     }
