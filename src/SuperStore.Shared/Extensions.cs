@@ -1,6 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using RabbitMQ.Client;
 using SuperStore.Shared.Connections;
+using SuperStore.Shared.Dispatchers;
 using SuperStore.Shared.Publishers;
 using SuperStore.Shared.Subscribers;
 
@@ -18,6 +19,8 @@ public static class Extensions
         services.AddSingleton<IChannelFactory, ChannelFactory>();
         services.AddSingleton<IMessagePublisher, MessagePublisher>();
         services.AddSingleton<IMessageSubscriber, MessageSubscriber>();
+        services.AddSingleton<IMessageDispatcher, MessageDispatcher>();
+
 
         return services;
     }

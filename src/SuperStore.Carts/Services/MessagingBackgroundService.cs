@@ -3,14 +3,17 @@ using SuperStore.Shared;
 
 namespace SuperStore.Carts.Services;
 
-internal sealed class MessagingBackgroundService : BackgroundService
+public class MessagingBackgroundService : BackgroundService
 {
     private readonly IMessageSubscriber _messageSubscriber;
+    private readonly IMessageDispatcher _dispatcher;
     private readonly ILogger<MessagingBackgroundService> _logger;
 
-    public MessagingBackgroundService(IMessageSubscriber messageSubscriber, ILogger<MessagingBackgroundService> logger)
+    public MessagingBackgroundService(IMessageSubscriber messageSubscriber, IMessageDispatcher dispatcher,
+        ILogger<MessagingBackgroundService> logger)
     {
         _messageSubscriber = messageSubscriber;
+        _dispatcher = dispatcher;
         _logger = logger;
     }
 
@@ -18,18 +21,18 @@ internal sealed class MessagingBackgroundService : BackgroundService
     {
         _messageSubscriber
             .SubscribeMessage<FundsMessage>("carts-service-eu-many-words-queue", "EU.#", "Funds",
-                (msg, args) =>
+                async (msg, args) =>
                 {
                     _logger.LogInformation(
                         $"Received EU multiple-word message for customer: {msg.CustomerId} | Funds: {msg.CurrentFunds} | RoutingKey: {args.RoutingKey}");
-                    return Task.CompletedTask;
+                    await _dispatcher.DispatchAsync(msg);
                 })
             .SubscribeMessage<FundsMessage>("carts-service-eu-single-word-queue", "EU.*", "Funds",
-                (msg, args) =>
+                async (msg, args) =>
                 {
                     _logger.LogInformation(
                         $"Received EU single-word message for customer: {msg.CustomerId} | Funds: {msg.CurrentFunds} | RoutingKey: {args.RoutingKey}");
-                    return Task.CompletedTask;
+                    await _dispatcher.DispatchAsync(msg);
                 });
     }
 }
