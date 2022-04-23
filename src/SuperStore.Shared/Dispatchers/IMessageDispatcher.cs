@@ -1,4 +1,4 @@
-namespace SuperStore.Shared;
+namespace SuperStore.Shared.Dispatchers;
 
 public interface IMessageDispatcher
 {

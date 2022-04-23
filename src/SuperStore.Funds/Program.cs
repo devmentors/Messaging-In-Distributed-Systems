@@ -1,5 +1,6 @@
 using SuperStore.Funds.Messages;
 using SuperStore.Shared;
+using SuperStore.Shared.Publishers;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddMessaging();

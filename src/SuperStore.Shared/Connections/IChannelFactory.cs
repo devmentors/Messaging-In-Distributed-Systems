@@ -1,6 +1,6 @@
 using RabbitMQ.Client;
 
-namespace SuperStore.Shared;
+namespace SuperStore.Shared.Connections;
 
 public interface IChannelFactory
 {

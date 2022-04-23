@@ -1,6 +1,6 @@
 using RabbitMQ.Client.Events;
 
-namespace SuperStore.Shared;
+namespace SuperStore.Shared.Subscribers;
 
 public interface IMessageSubscriber
 {
