@@ -1,9 +1,10 @@
 using SuperStore.Carts.DAL;
 using SuperStore.Carts.Services;
 using SuperStore.Shared;
+using SuperStore.Shared.Deduplication;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddMessaging();
+builder.Services.AddMessaging(c => c.AddDeduplication<CartsDbContext>(builder.Configuration));
 builder.Services.AddDataAccess();
 builder.Services.AddHostedService<MessagingBackgroundService>();
 

@@ -2,17 +2,22 @@ using System.Text;
 using System.Text.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using SuperStore.Shared.Accessors;
 using SuperStore.Shared.Connections;
 
 namespace SuperStore.Shared.Subscribers;
 
 internal sealed class MessageSubscriber : IMessageSubscriber
 {
+    private readonly IMessageIdAccessor _messageIdAccessor;
     private readonly IModel _channel;
 
-    public MessageSubscriber(IChannelFactory channelFactory)
-        => _channel = channelFactory.Create();
-    
+    public MessageSubscriber(IChannelFactory channelFactory, IMessageIdAccessor messageIdAccessor)
+    {
+        _channel = channelFactory.Create();
+        _messageIdAccessor = messageIdAccessor;
+    }
+
     public IMessageSubscriber SubscribeMessage<TMessage>(string queue, string routingKey, string exchange, 
         Func<TMessage, BasicDeliverEventArgs, Task> handle) where TMessage : class, IMessage
     {
@@ -28,6 +33,8 @@ internal sealed class MessageSubscriber : IMessageSubscriber
             var body = ea.Body.ToArray();
             var message = JsonSerializer.Deserialize<TMessage>(Encoding.UTF8.GetString(body));
 
+            _messageIdAccessor.SetMessageId(ea.BasicProperties.MessageId);
+            
             await handle(message, ea);
             
             _channel.BasicAck(ea.DeliveryTag, multiple: false);
