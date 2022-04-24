@@ -9,6 +9,7 @@ Code for all the messaging-related concepts/patterns described on YouTube during
 The **implementation process** can be found on our [DevMentors YouTube](https://www.youtube.com/watch?v=dp5nqLnhZyE&list=PLqqD43D6Mqz0dxaC7kwvg0pUNY5mKHtrs&ab_channel=DevMentors) channel:
 - [Episode 1: Microservices communication patterns, messaging basics](https://www.youtube.com/watch?v=eW4JgrkwWEM&ab_channel=DevMentors)
 - [Episode 2: Message delivery (at least-once, at most-once, exactly once?)](https://www.youtube.com/watch?v=l6nLt4Km1cA&ab_channel=DevMentors)
+- [Episode 3: Message deduplication](https://www.youtube.com/watch?v=TuMtG_27Khg&ab_channel=DevMentors)
 
 # Requirements
 
